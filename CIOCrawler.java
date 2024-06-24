@@ -41,7 +41,7 @@ public class CIOCrawler {
                 for (Element elem : elems){
                     if(out != null) {   //PrintWriter out를 이용해 파일에 작성가능
                         out.println("## " + elem.text());
-                        out.println("- link: " + elem.select("a[href]").attr("href"));
+                        out.println("- link: https://www.ciokorea.com" + elem.select("a[href]").attr("href"));
                     }
                 }
             } catch (IOException e) {
