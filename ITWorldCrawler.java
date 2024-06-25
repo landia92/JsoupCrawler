@@ -9,9 +9,9 @@ import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-public class CIOCrawler {
+public class ITWorldCrawler {
     static String resultPath = "./articles/";
-    static String fileName = "CIO Korea";
+    static String fileName = "IT World";
 
     static int fileCount = 1;
     static int pageSize = 1;
@@ -33,10 +33,12 @@ public class CIOCrawler {
         Connection conn = Jsoup.connect(articleUrl);
         try {
             Document doc = conn.get();
-            Elements elems = doc.select(".row>.col-12"); //set 자료형으로 관리해도 됨
+            Elements elems = doc.select(".row>.section-content"); //set 자료형으로 관리해도 됨
             for (Element elem : elems) {
                 if (out != null) {   //PrintWriter out를 이용해 파일에 작성가능
-                    out.println(elem.select("#node_title").text()); //기사 제목
+                    out.println(elem.select(".font-color-primary-1").first().text());  //기사 카테고리 앞에 한개
+                    //out.println(elem.select(".font-color-primary-1").first().text());  //기사 카테고리 전부
+                    out.println(elem.select(".node-title").text()); //기사 제목
                     out.println(elem.select(".node-body").text());  //기사 내용
 
                 }
@@ -47,7 +49,7 @@ public class CIOCrawler {
         }
     }
     public static void main(String[] args) {
-        String URL = "https://www.ciokorea.com/news";
+        String URL = "https://www.itworld.co.kr/news/";
         for (int i = 1; i < pageSize+1; i++) {
             String params = "?page=" + i;
             Connection conn = Jsoup.connect(URL + params);
@@ -56,7 +58,7 @@ public class CIOCrawler {
                 Elements elems = doc.select(".col .card-title"); //set 자료형으로 관리해도 됨
                 //System.out.println(elems);
                 for (Element elem : elems) {
-                    crawlArticles("https://www.ciokorea.com" + elem.select("a[href]").attr("href"));
+                    crawlArticles("https://www.itworld.co.kr" + elem.select("a[href]").attr("href"));
                 }
             } catch (IOException e) {
                 System.err.println("페이지 요청 중 에러 발생");
