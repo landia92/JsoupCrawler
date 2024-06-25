@@ -36,7 +36,9 @@ public class CIOCrawler {
             Elements elems = doc.select(".row>.col-12"); //set 자료형으로 관리해도 됨
             for (Element elem : elems) {
                 if (out != null) {   //PrintWriter out를 이용해 파일에 작성가능
-                    out.println(elem.text());
+                    out.println(elem.select("#node_title").text()); //기사 제목
+                    out.println(elem.select(".node-body").text());  //기사 내용
+
                 }
             }
         } catch (IOException e) {
