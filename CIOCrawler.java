@@ -33,13 +33,12 @@ public class CIOCrawler {
         Connection conn = Jsoup.connect(articleUrl);
         try {
             Document doc = conn.get();
-            Elements elems = doc.select(".row>.col-12"); //set 자료형으로 관리해도 됨
-            for (Element elem : elems) {
-                if (out != null) {   //PrintWriter out를 이용해 파일에 작성가능
-                    out.println(elem.select("#node_title").text()); //기사 제목
-                    out.println(elem.select(".node-body").text());  //기사 내용
-
-                }
+            Elements elem = doc.select(".row>.col-12"); //set 자료형으로 관리해도 됨
+            if (out != null) {   //PrintWriter out를 이용해 파일에 작성가능
+                out.println(elem.select(".pb-5>p.font-color-primary-2>a>small.font-color-primary-2").first().text());   // 카테고리 1번째
+                out.println(elem.select("#node_title").text()); //기사 제목
+                out.println("https://www.ciokorea.com" + elem.select(".image>img").attr("src"));  //기사 내부 이미지
+                out.println(elem.select(".node-body").text());  //기사 내용
             }
         } catch (IOException e) {
             System.err.println("페이지 요청 중 에러 발생");
