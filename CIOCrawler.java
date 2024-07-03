@@ -54,6 +54,7 @@ public class CIOCrawler {
         LocalDateTime today = LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter);
         LocalDateTime yesterday = today.minusDays(1);
 
+        int a = 1;
         Connection conn = Jsoup.connect(URL);
         try {
             Document doc = conn.get();
@@ -67,6 +68,7 @@ public class CIOCrawler {
                 // 시간 비교
                 if(articleTime.isBefore(today) && articleTime.isAfter(yesterday)) {
                     // 크롤링 가능한 기간
+                    System.out.println("크롤링 가능합니다 : " + a++ + "번째");
                     crawlArticles(link);
                 }
                 else {
