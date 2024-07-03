@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import javax.xml.*;
 import org.jsoup.Jsoup;
 import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
@@ -46,21 +47,36 @@ public class CIOCrawler {
         }
     }
     public static void main(String[] args) {
-        String URL = "https://www.ciokorea.com/news";
-        for (int i = 1; i < pageSize+1; i++) {
-            String params = "?page=" + i;
-            Connection conn = Jsoup.connect(URL + params);
-            try {
-                Document doc = conn.get();
-                Elements elems = doc.select(".col .card-title"); //set 자료형으로 관리해도 됨
-                //System.out.println(elems);
-                for (Element elem : elems) {
-                    crawlArticles("https://www.ciokorea.com" + elem.select("a[href]").attr("href"));
+        String URL = "https://www.ciokorea.com/rss/feed/index.php"; // CioKorea의 RSS 링크
+
+        // 시간을 비교하기 위한 Formatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime today = LocalDateTime.parse(LocalDateTime.now().format(formatter), formatter);
+        LocalDateTime yesterday = today.minusDays(1);
+
+        Connection conn = Jsoup.connect(URL);
+        try {
+            Document doc = conn.get();
+            Elements elems = doc.select("item"); //set 자료형으로 관리해도 됨
+            //System.out.println(elems);
+            for (Element elem : elems) {
+                //System.out.println(elem.select("pubDate").text());
+                String link = elem.select("link").text();   // 기사의 링크
+                String pubDate = elem.select("pubDate").text(); // 기사 발행 시간
+                LocalDateTime articleTime = LocalDateTime.parse(pubDate, formatter);
+                // 시간 비교
+                if(articleTime.isBefore(today) && articleTime.isAfter(yesterday)) {
+                    // 크롤링 가능한 기간
+                    crawlArticles(link);
                 }
-            } catch (IOException e) {
-                System.err.println("페이지 요청 중 에러 발생");
-                e.printStackTrace();
+                else {
+                    System.out.println("날짜가 지났습니다.");
+                    break;
+                }
             }
+        } catch (IOException e) {
+            System.err.println("페이지 요청 중 에러 발생");
+            e.printStackTrace();
         }
     }   // end of main method
 }
