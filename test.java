@@ -34,7 +34,7 @@ public class test {
 
         // DB URL
         // IP:PORT/스키마
-        String dbUrl = "jdbc:mysql://localhost:3306/IT_Articles";
+        String dbUrl = "jdbc:mysql://localhost:3306/itscribe";
 
         // DB ID/PW
         String dbUser = "root";
